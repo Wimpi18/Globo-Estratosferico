@@ -1,16 +1,43 @@
-import { useState } from "react";
-import Aflatoxinas from "./Aflatoxinas";
-import Estadisticos from "./Estadisticos";
+import { useEffect, useState } from "react";
+import Aflatoxinas from "./components/Aflatoxinas";
+import Estadisticos from "./components/Estadisticos";
+import Radiacion from "./components/Radiacion";
+import Papa from "papaparse";
+
+export interface DatosCSV {
+  temperatura: string;
+  radiacion: string;
+  humedad: string
+  hora: string;
+}
 
 const App = () => {
   const [selectedStat, setSelectedStat] = useState("Aflatoxinas");
+  const [data, setData] = useState<DatosCSV[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/data/datalog.csv");
+      const reader = response.body?.getReader();
+      const result = await reader?.read();
+      const decoder = new TextDecoder("utf-8");
+      const csvData = decoder.decode(result?.value);
+      const parsedData = Papa.parse<DatosCSV>(csvData, {
+        header: true,
+        skipEmptyLines: true,
+      }).data;
+      setData(parsedData);
+    };
+
+    fetchData();
+  }, []);
 
   const renderSelectedStat = () => {
     switch (selectedStat) {
       case "Aflatoxinas":
         return <Aflatoxinas />;
       case "Radiación":
-        return <div>Componente de Radiación</div>;
+        return <Radiacion datos={data}/>;
       case "Temperatura":
         return <div>Componente de Temperatura</div>;
       case "Humedad":
