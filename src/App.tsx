@@ -15,24 +15,46 @@ export interface DatosCSV {
 
 const App = () => {
   const [selectedStat, setSelectedStat] = useState("Aflatoxinas");
-  const [data, setData] = useState<DatosCSV[]>([]);
+  const [data, setData] = useState<DatosCSV[]>([]); // Estado para los datos
+  const [defaultData, setDefaultData] = useState<DatosCSV[]>([]); // Guardar datos por defecto
+
+  // Función para cargar los datos predefinidos
+  const fetchDefaultData = async () => {
+    const response = await fetch("/data/datalog.csv");
+    const reader = response.body?.getReader();
+    const result = await reader?.read();
+    const decoder = new TextDecoder("utf-8");
+    const csvData = decoder.decode(result?.value);
+    const parsedData = Papa.parse<DatosCSV>(csvData, {
+      header: true,
+      skipEmptyLines: true,
+    }).data;
+    setData(parsedData);
+    setDefaultData(parsedData); // Guardar datos predefinidos
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/data/datalog.csv");
-      const reader = response.body?.getReader();
-      const result = await reader?.read();
-      const decoder = new TextDecoder("utf-8");
-      const csvData = decoder.decode(result?.value);
-      const parsedData = Papa.parse<DatosCSV>(csvData, {
+    fetchDefaultData(); // Cargar datos predefinidos al montar el componente
+  }, []);
+
+  // Función para manejar la carga de archivo CSV
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      Papa.parse<DatosCSV>(file, {
         header: true,
         skipEmptyLines: true,
-      }).data;
-      setData(parsedData);
-    };
+        complete: (results) => {
+          setData(results.data); // Actualizar datos con el archivo subido
+        },
+      });
+    }
+  };
 
-    fetchData();
-  }, []);
+  // Función para restablecer los datos predefinidos cuando se elimina el archivo
+  const handleRemoveFile = () => {
+    setData(defaultData); // Restaurar los datos predefinidos
+  };
 
   const renderSelectedStat = () => {
     switch (selectedStat) {
@@ -51,7 +73,11 @@ const App = () => {
 
   return (
     <div className="flex h-screen w-screen">
-      <Estadisticos onSelectStat={setSelectedStat} />
+      <Estadisticos
+        onSelectStat={setSelectedStat}
+        onFileUpload={handleFileUpload}
+        onRemoveFile={handleRemoveFile}
+      />
       <div className="flex-grow flex justify-center items-center">
         {renderSelectedStat()}
       </div>

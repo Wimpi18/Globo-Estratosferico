@@ -6,7 +6,7 @@ const Aflatoxinas = () => {
       <div className="w-full max-w-4xl h-full max-h-96">
         <BarChart
           xAxis={[{ scaleType: "band", data: ["B1", "B2", "G1", "G2"] }]}
-          series={[{ data: [4, 3, 2, 2] }, { data: [1, 6, 2, 1] }]}
+          series={[{ data: [100, 80, 43, 30] }, { data: [10, 12, 20, 11] }]}
           title="Aflatoxinas en pasta de castaña"
         />
       </div>
