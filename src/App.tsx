@@ -3,11 +3,13 @@ import Aflatoxinas from "./components/Aflatoxinas";
 import Estadisticos from "./components/Estadisticos";
 import Radiacion from "./components/Radiacion";
 import Papa from "papaparse";
+import Temperatura from "./components/Temperatura";
+import Humedad from "./components/Humedad";
 
 export interface DatosCSV {
   temperatura: string;
   radiacion: string;
-  humedad: string
+  humedad: string;
   hora: string;
 }
 
@@ -37,11 +39,11 @@ const App = () => {
       case "Aflatoxinas":
         return <Aflatoxinas />;
       case "Radiación":
-        return <Radiacion datos={data}/>;
+        return <Radiacion datos={data} />;
       case "Temperatura":
-        return <div>Componente de Temperatura</div>;
+        return <Temperatura datos={data} />;
       case "Humedad":
-        return <div>Componente de Humedad</div>;
+        return <Humedad datos={data} />;
       default:
         return <Aflatoxinas />;
     }
