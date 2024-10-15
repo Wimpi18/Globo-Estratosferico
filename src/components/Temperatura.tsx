@@ -1,6 +1,6 @@
 // Humedad.tsx
 import { LineChart } from "@mui/x-charts";
-import { procesarDatos } from "../utils/obtenerMedianaTemperaturaHumedad";
+import { procesarDatos } from "../utils/procesarDatosTemperaturaHumedad.util";
 import { DatosCSV } from "../App";
 
 interface TemperaturaHumedadProps {

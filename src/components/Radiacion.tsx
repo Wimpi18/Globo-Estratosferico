@@ -1,6 +1,6 @@
 // Radiacion.tsx
 import { LineChart } from "@mui/x-charts";
-import { procesarDatos } from "../utils/obtenerMedianaRadiacion";
+import { procesarDatos } from "../utils/procesarDatosRadiacion.util";
 import { DatosCSV } from "../App";
 
 interface RadiacionProps {
