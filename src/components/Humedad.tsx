@@ -15,7 +15,8 @@ const Humedad = ({ datos }: TemperaturaHumedadProps) => {
     <div className="flex justify-center items-center w-full h-full">
       <div className="w-full max-w-4xl h-full max-h-96">
         <LineChart
-          xAxis={[{ data: resultados.map((result) => result.hora) }]} // Extraer la mediana de la hora
+          xAxis={[{ data: resultados.map((result) => result.hora), label: "Tiempo en segundos" }]} // Extraer la mediana de la hora
+          yAxis={[{label:"%"}]}
           series={[
             {
               data: resultados.map((result) => result.humedad), // Extraer la radiación ajustada

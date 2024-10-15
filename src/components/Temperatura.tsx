@@ -15,7 +15,8 @@ const Temperatura = ({ datos }: TemperaturaHumedadProps) => {
     <div className="flex justify-center items-center w-full h-full">
       <div className="w-full max-w-4xl h-full max-h-96">
         <LineChart
-          xAxis={[{ data: resultados.map((result) => result.hora) }]}
+          xAxis={[{ data: resultados.map((result) => result.hora), label: "Tiempo en segundos" }]}
+          yAxis={[{label: "°C"}]}
           series={[
             {
               data: resultados.map((result) => result.temperatura),

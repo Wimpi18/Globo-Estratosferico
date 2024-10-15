@@ -15,7 +15,13 @@ const Radiacion = ({ datos }: RadiacionProps) => {
     <div className="flex justify-center items-center w-full h-full">
       <div className="w-full max-w-4xl h-full max-h-96">
         <LineChart
-          xAxis={[{ data: resultados.map((result) => result.hora) }]} // Extraer la mediana de la hora
+          xAxis={[
+            {
+              data: resultados.map((result) => result.hora),
+              label: "Tiempo en segundos",
+            },
+          ]} // Extraer la mediana de la hora
+          yAxis={[{ label: "mW/cm^2" }]}
           series={[
             {
               data: resultados.map((result) => result.radiacion), // Extraer la radiación ajustada
