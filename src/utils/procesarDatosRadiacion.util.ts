@@ -26,7 +26,8 @@ export const procesarDatos = (datos: DatosCSV[]) => {
     const medianaRadiacion = obtenerMediana(radiaciones);
     const medianaHora = obtenerMediana(horasEnSegundos);
 
-    const radiacionAjustada = ((medianaRadiacion / 1000 - 1) * 15) / 2;
+    // const radiacionAjustada = ((medianaRadiacion / 1000 - 1) * 15) / 2;
+    const radiacionAjustada = ((15*medianaRadiacion)/2699) - (15345/2699)
     resultados.push({ radiacion: radiacionAjustada, hora: medianaHora });
   }
 
