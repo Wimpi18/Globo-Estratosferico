@@ -5,6 +5,7 @@ import Radiacion from "./components/Radiacion";
 import Papa from "papaparse";
 import Temperatura from "./components/Temperatura";
 import Humedad from "./components/Humedad";
+import * as XLSX from "xlsx";
 
 export interface DatosCSV {
   temperatura: string;
@@ -17,6 +18,54 @@ const App = () => {
   const [selectedStat, setSelectedStat] = useState("Aflatoxinas");
   const [data, setData] = useState<DatosCSV[]>([]); // Estado para los datos
   const [defaultData, setDefaultData] = useState<DatosCSV[]>([]); // Guardar datos por defecto
+  const [beforeFlightData, setBeforeFlightData] = useState<number[]>([
+    0, 0, 0, 0,
+  ]);
+  const [afterFlightData, setAfterFlightData] = useState<number[]>([
+    0, 0, 0, 0,
+  ]);
+
+  const handleXlsxUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: "before" | "after"
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target?.result as ArrayBuffer);
+      const workbook = XLSX.read(data, { type: "array" });
+
+      // Asume que la primera hoja contiene los datos relevantes
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+
+      // Lee los valores de las celdas específicas
+      const aflatoxinaB1 = firstSheet["B6"] ? firstSheet["B6"].v : 0;
+      const aflatoxinaG1 = firstSheet["B7"] ? firstSheet["B7"].v : 0;
+      const aflatoxinaB2 = firstSheet["B8"] ? firstSheet["B8"].v : 0;
+      const aflatoxinaG2 = firstSheet["B9"] ? firstSheet["B9"].v : 0;
+
+      // Actualiza el estado con los valores de aflatoxinas
+      if (type === "before") {
+        setBeforeFlightData([
+          aflatoxinaB1,
+          aflatoxinaB2,
+          aflatoxinaG1,
+          aflatoxinaG2,
+        ]);
+      } else {
+        setAfterFlightData([
+          aflatoxinaB1,
+          aflatoxinaB2,
+          aflatoxinaG1,
+          aflatoxinaG2,
+        ]);
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
 
   // Función para cargar los datos predefinidos
   const fetchDefaultData = async () => {
@@ -59,7 +108,12 @@ const App = () => {
   const renderSelectedStat = () => {
     switch (selectedStat) {
       case "Aflatoxinas":
-        return <Aflatoxinas />;
+        return (
+          <Aflatoxinas
+            beforeFlightData={beforeFlightData}
+            afterFlightData={afterFlightData}
+          />
+        );
       case "Radiación":
         return <Radiacion datos={data} />;
       case "Temperatura":
@@ -67,7 +121,12 @@ const App = () => {
       case "Humedad":
         return <Humedad datos={data} />;
       default:
-        return <Aflatoxinas />;
+        return (
+          <Aflatoxinas
+            beforeFlightData={beforeFlightData}
+            afterFlightData={afterFlightData}
+          />
+        );
     }
   };
 
@@ -77,6 +136,7 @@ const App = () => {
         onSelectStat={setSelectedStat}
         onFileUpload={handleFileUpload}
         onRemoveFile={handleRemoveFile}
+        onXlsxUpload={handleXlsxUpload}
       />
       <div className="flex-grow flex justify-center items-center">
         {renderSelectedStat()}
