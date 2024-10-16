@@ -101,8 +101,14 @@ const App = () => {
   };
 
   // Función para restablecer los datos predefinidos cuando se elimina el archivo
-  const handleRemoveFile = () => {
-    setData(defaultData); // Restaurar los datos predefinidos
+  const handleRemoveFile = (type: "selected" | "before" | "after") => {
+    if (type === "selected") {
+      setData(defaultData);
+    } else if (type === "before") {
+      setBeforeFlightData([0, 0, 0, 0]);
+    } else if (type === "after") {
+      setAfterFlightData([0, 0, 0, 0]);
+    }
   };
 
   const renderSelectedStat = () => {
@@ -135,7 +141,7 @@ const App = () => {
       <Estadisticos
         onSelectStat={setSelectedStat}
         onFileUpload={handleFileUpload}
-        onRemoveFile={handleRemoveFile}
+        onRemoveFile={handleRemoveFile} // Pasar la función para manejar la eliminación de archivos
         onXlsxUpload={handleXlsxUpload}
       />
       <div className="flex-grow flex justify-center items-center">

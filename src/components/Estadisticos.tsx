@@ -1,3 +1,5 @@
+// Estadisticos.tsx
+
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
@@ -14,7 +16,7 @@ import { useState } from "react";
 interface EstadisticosProps {
   onSelectStat: (stat: string) => void;
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void; // Prop para subir archivo
-  onRemoveFile: () => void; // Nueva prop para eliminar archivo
+  onRemoveFile: (type: "selected" | "before" | "after") => void; // Nueva prop para eliminar archivo
   onXlsxUpload: (
     event: React.ChangeEvent<HTMLInputElement>,
     type: "before" | "after"
@@ -59,9 +61,15 @@ export default function Estadisticos({
     }
   };
 
-  const handleRemoveFile = () => {
-    setSelectedFile(null); // Quitar el archivo
-    onRemoveFile(); // Restablecer los datos
+  const handleRemoveFile = (type: "selected" | "before" | "after") => {
+    if (type === "selected") {
+      setSelectedFile(null); // Quitar el archivo CSV
+    } else if (type === "before") {
+      setBeforeFlightFile(null); // Quitar el archivo antes del vuelo
+    } else if (type === "after") {
+      setAfterFlightFile(null); // Quitar el archivo después del vuelo
+    }
+    onRemoveFile(type); // Restablecer los datos
   };
 
   const stats = ["Aflatoxinas", "Radiación", "Temperatura", "Humedad"];
@@ -135,7 +143,7 @@ export default function Estadisticos({
               color="secondary"
               fullWidth
               startIcon={<Delete />}
-              onClick={handleRemoveFile}
+              onClick={() => handleRemoveFile("selected")}
               sx={{
                 textTransform: "none",
                 fontWeight: "bold",
@@ -194,7 +202,7 @@ export default function Estadisticos({
               color="secondary"
               fullWidth
               startIcon={<Delete />}
-              onClick={handleRemoveFile}
+              onClick={() => handleRemoveFile("before")}
               sx={{
                 textTransform: "none",
                 fontWeight: "bold",
@@ -251,7 +259,7 @@ export default function Estadisticos({
               color="secondary"
               fullWidth
               startIcon={<Delete />}
-              onClick={handleRemoveFile}
+              onClick={() => handleRemoveFile("after")}
               sx={{
                 textTransform: "none",
                 fontWeight: "bold",
