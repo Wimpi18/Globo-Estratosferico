@@ -16,27 +16,17 @@ export const procesarDatos = (datos: DatosCSV[]) => {
 
   for (let i = 0; i < datos.length; i += cantMuestra) {
     const grupo = datos.slice(i, i + cantMuestra);
-    const temperaturas = grupo.map((d) => parseFloat(d.temperatura));
+    // const temperaturas = grupo.map((d) => parseFloat(d.temperatura));
     const radiaciones = grupo.map((d) => parseFloat(d.radiacion));
     const horasEnSegundos = horasCorregidas
       .slice(i, i + cantMuestra)
       .map(convertirAHorasEnSegundos);
 
-    const medianaTemperatura = obtenerMediana(temperaturas);
+    // const medianaTemperatura = obtenerMediana(temperaturas);
     const medianaRadiacion = obtenerMediana(radiaciones);
     const medianaHora = obtenerMediana(horasEnSegundos);
 
-    let radiacionAjustada = medianaRadiacion;
-    if (medianaTemperatura >= -25 && medianaTemperatura <= -4) {
-      radiacionAjustada /= 1021;
-    } else if (medianaTemperatura >= -5 && medianaTemperatura <= 24) {
-      radiacionAjustada /= 1022;
-    } else if (medianaTemperatura >= 25 && medianaTemperatura <= 74) {
-      radiacionAjustada /= 1023;
-    } else if (medianaTemperatura >= 75) {
-      radiacionAjustada /= 1024;
-    }
-
+    const radiacionAjustada = ((medianaRadiacion / 1000 - 1) * 15) / 2;
     resultados.push({ radiacion: radiacionAjustada, hora: medianaHora });
   }
 
