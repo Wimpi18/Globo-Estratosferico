@@ -6,6 +6,16 @@ import {
   corregirTiemposSecuenciales,
 } from "./time.util";
 
+const mapfloat = (
+  x: number,
+  in_min: number,
+  in_max: number,
+  out_min: number,
+  out_max: number
+): number => {
+  return ((x - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+};
+
 export const procesarDatos = (datos: DatosCSV[]) => {
   const resultados: { radiacion: number; hora: number }[] = [];
 
@@ -22,12 +32,10 @@ export const procesarDatos = (datos: DatosCSV[]) => {
       .slice(i, i + cantMuestra)
       .map(convertirAHorasEnSegundos);
 
-    // const medianaTemperatura = obtenerMediana(temperaturas);
     const medianaRadiacion = obtenerMediana(radiaciones);
     const medianaHora = obtenerMediana(horasEnSegundos);
 
-    // const radiacionAjustada = ((medianaRadiacion / 1000 - 1) * 15) / 2;
-    const radiacionAjustada = ((15*medianaRadiacion)/2699) - (15345/2699)
+    const radiacionAjustada = mapfloat(medianaRadiacion, 1008, 3474, 0.0, 15.0);
     resultados.push({ radiacion: radiacionAjustada, hora: medianaHora });
   }
 
